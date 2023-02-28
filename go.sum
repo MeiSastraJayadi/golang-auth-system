@@ -1,3 +1,5 @@
+github.com/MeiSastraJayadi/acacia v0.0.0-20230227235333-a02903308c09 h1:qAmxEz9HnFiR5z3qyv0yIiqT8CuV8GAVGOWJaVxuCV0=
+github.com/MeiSastraJayadi/acacia v0.0.0-20230227235333-a02903308c09/go.mod h1:KKgd4P0V2HOJ717RpuNCqKuFbwxI+KRQDq0jF1a6dZw=
 github.com/go-sql-driver/mysql v1.7.0 h1:ueSltNNllEqE3qcWBTD0iQd3IpL/6U+mJxLkazJ7YPc=
 github.com/go-sql-driver/mysql v1.7.0/go.mod h1:OXbVy3sEdcQ2Doequ6Z5BW6fXNQTmx+9S1MCJN5yJMI=
 golang.org/x/crypto v0.6.0 h1:qfktjS5LUO+fFKeJXZ+ikTRijMmljikvG68fpMMruSc=

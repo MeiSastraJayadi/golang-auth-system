@@ -11,7 +11,7 @@ import (
 
 func AddUser(username string, password string, db *sql.DB) error {
   ctx := context.Background()
-  hashedPassword, encErr := bcrypt.GenerateFromPassword([]byte(password), 17)
+  hashedPassword, encErr := bcrypt.GenerateFromPassword([]byte(password), 10)
   if encErr != nil {
     return encErr
   }

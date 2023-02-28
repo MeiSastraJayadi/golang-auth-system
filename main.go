@@ -19,7 +19,7 @@ func main() {
   // if err != nil {
   //   fmt.Printf("%s", err.Error())
   // }
-  err := usecase.Login("dekmei_13", "meisastrajayadi", db)
+  err := usecase.Login("dekmei_13", "meisastra", db)
   if err != nil {
     fmt.Println(err.Error())
   }
