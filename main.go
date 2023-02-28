@@ -5,7 +5,8 @@ import (
 	"os"
 
 	database "github.com/MeiSastraJayadi/golang-auth-system.git/db"
-  _ "github.com/go-sql-driver/mysql"
+	"github.com/MeiSastraJayadi/golang-auth-system.git/usecase"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
@@ -14,8 +15,12 @@ func main() {
   if db == nil {
     os.Exit(1)
   }
-  err := database.AddUser("dekmei_13", "meisastra", db)
+  // err := database.AddUser("dekmei_13", "meisastra", db)
+  // if err != nil {
+  //   fmt.Printf("%s", err.Error())
+  // }
+  err := usecase.Login("dekmei_13", "meisastrajayadi", db)
   if err != nil {
-    fmt.Printf("%s", err.Error())
+    fmt.Println(err.Error())
   }
 }

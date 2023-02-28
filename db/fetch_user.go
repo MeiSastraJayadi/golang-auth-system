@@ -10,7 +10,7 @@ import (
 
 func FetchUser(username string, db *sql.DB) *mdl.User {
   ctx := context.Background()
-  query := fmt.Sprintf("SELECT * FROM user_table WHERE username = '%s", username)
+  query := fmt.Sprintf("SELECT * FROM user_table WHERE username = '%s'", username)
   result, err := db.QueryContext(ctx, query)
   if err != nil {
     return nil
