@@ -12,25 +12,26 @@ import (
 	"github.com/MeiSastraJayadi/golang-auth-system.git/usecase"
 )
 
-type DeliverLogin struct {
+type DeliverAuth struct {
   db *sql.DB 
 }
 
-func NewDeliverLogin(db *sql.DB) *DeliverLogin {
-  return &DeliverLogin{
+func NewDeliverAuth(db *sql.DB) *DeliverAuth {
+  return &DeliverAuth{
     db : db, 
   }
 }
 
 func LoginRouter(db *sql.DB) *multiplexer.Router {
-  newDeliver := NewDeliverLogin(db)
+  newDeliver := NewDeliverAuth(db)
   router := multiplexer.NewRouter("/").SetPrefix("auth")  
   router.Methods(http.MethodPost).HandleFunc("/login", newDeliver.LoginHandler)
+  router.Methods(http.MethodPost).HandleFunc("/register", newDeliver.Registration)
   return router
 }
 
-func(lg *DeliverLogin) LoginHandler(w http.ResponseWriter, r *http.Request) {
-  log.Println("/login")
+func(lg *DeliverAuth) LoginHandler(w http.ResponseWriter, r *http.Request) {
+  log.Println("/auth/login")
   user := &mdl.User{}
   decoder := json.NewDecoder(r.Body)
   err := decoder.Decode(user)
@@ -42,6 +43,24 @@ func(lg *DeliverLogin) LoginHandler(w http.ResponseWriter, r *http.Request) {
   if err != nil {
     fmt.Fprint(w, err.Error())
     log.Println("Login error")
+  }
+}
+
+func(lg *DeliverAuth) Registration(w http.ResponseWriter, r *http.Request) {
+  log.Println("/auth/register")
+  user := &mdl.UserRegis{}
+  decoder := json.NewDecoder(r.Body)
+  err := decoder.Decode(user)
+  if err != nil {
+    log.Println(err.Error())
+    fmt.Fprintln(w, err.Error())
+    return
+  }
+  err = usecase.Regis(user.Username, user.Password, user.Password2, lg.db)
+  if err != nil {
+    log.Println(err.Error())
+    fmt.Fprintln(w, err.Error())
+    return
   }
 }
 
