@@ -12,6 +12,7 @@ import (
 	"github.com/MeiSastraJayadi/acacia/multiplexer"
 	database "github.com/MeiSastraJayadi/golang-auth-system.git/db"
 	"github.com/MeiSastraJayadi/golang-auth-system.git/deliver"
+	"github.com/joho/godotenv"
 
 	// "github.com/MeiSastraJayadi/golang-auth-system.git/usecase"
 	_ "github.com/go-sql-driver/mysql"
@@ -19,6 +20,10 @@ import (
 
 func main() {
   db := database.CreateConnection("go-auth", "mysql")
+  err := godotenv.Load()
+  if err != nil {
+    log.Println(".env file doesn't exist")
+  }
   defer db.Close()
   if db == nil {
     os.Exit(1)
@@ -36,7 +41,7 @@ func main() {
   mainRouter.Methods(http.MethodGet).HandleFunc("/slow", SlowHandler)
   mainRouter.Methods(http.MethodGet, http.MethodPost).HandleFunc("/", MainHandler)
   loginRouter := deliver.LoginRouter(db)
-  err := mainRouter.SubRouter(loginRouter)
+  err = mainRouter.SubRouter(loginRouter)
   if err != nil {
     os.Exit(1)
   }

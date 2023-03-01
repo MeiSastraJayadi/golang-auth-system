@@ -10,4 +10,5 @@ require (
 require (
 	github.com/MeiSastraJayadi/acacia v0.1.0 // indirect
 	github.com/golang-jwt/jwt/v5 v5.0.0-rc.1 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
 )

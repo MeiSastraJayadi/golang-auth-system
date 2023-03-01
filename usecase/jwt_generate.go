@@ -1,8 +1,11 @@
 package usecase
 
 import (
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
 	"errors"
-	"os"
+	// "os"
 	"time"
 
 	"github.com/MeiSastraJayadi/golang-auth-system.git/mdl"
@@ -10,13 +13,21 @@ import (
 )
 
 func GenerateJWT(username string, exp time.Duration) (*mdl.TokenInfo, error) {
-  secretKey := []byte(os.Getenv("SECRET_KEY"))
-  token := jwt.New(jwt.SigningMethodEdDSA)
+  // key, keyErr := jwt.ParseEdPrivateKeyFromPEM([]byte(os.Getenv("SECRET_KEY")))
+  // if keyErr != nil {
+  //   return nil, keyErr
+  // }
+  key, keyErr := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+  if keyErr != nil {
+    return nil, keyErr
+  }
+
+  token := jwt.New(jwt.SigningMethodES256)
   claims := token.Claims.(jwt.MapClaims)
   claims["exp"] = time.Now().Add(exp).Unix()
   claims["user"] = username
   claims["authorized"] = true
-  tokenKey, err := token.SignedString(secretKey)
+  tokenKey, err := token.SignedString(key)
   if err != nil {
     return nil, errors.New("Failed to generate token")
   }
