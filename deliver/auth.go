@@ -39,7 +39,7 @@ func(lg *DeliverAuth) LoginHandler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprint(w, err.Error())
     log.Println("Login error")
   }
-  err = usecase.Login(user.Username, user.Password, lg.db)
+  err = usecase.Login(user.Username, user.Password, lg.db, w)
   if err != nil {
     fmt.Fprint(w, err.Error())
     log.Println("Login error")
