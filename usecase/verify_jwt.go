@@ -1,9 +1,6 @@
 package usecase
 
 import (
-	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/rand"
 	"errors"
 	"fmt"
 	"log"
@@ -13,7 +10,18 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func VerifyJWT(next func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
+type Auth struct {
+  privateKey string
+}
+
+func NewAuth(pk string) *Auth {
+  return &Auth{
+    privateKey : pk,
+  } 
+}
+
+func (auth *Auth) VerifyJWT(next func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
+  publicKey := Decode(auth.privateKey).PublicKey
 
   return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
     if r.Header["Authorization"] == nil {
@@ -39,11 +47,7 @@ func VerifyJWT(next func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
       if !ok {
         return nil, errors.New("Token signing method is invalid")
       } 
-      result, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-      if err != nil {
-        return nil, err
-      }
-      return result, nil
+      return &publicKey, nil
     })
 
     if err != nil {

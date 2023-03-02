@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func Login(username string, password string, db *sql.DB, w io.Writer) error {
+func Login(username string, password string, db *sql.DB, w io.Writer, privateK string) error {
   user := database.FetchUser(username, db)
   if user == nil {
     return errors.New("The user doesnt exist")
@@ -20,7 +20,7 @@ func Login(username string, password string, db *sql.DB, w io.Writer) error {
   if err != nil {
     return err
   }
-  token, err := GenerateJWT(username, time.Minute*10) 
+  token, err := GenerateJWT(username, time.Minute*10, privateK) 
   if err != nil {
     return err
   }

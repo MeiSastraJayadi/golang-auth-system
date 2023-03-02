@@ -14,16 +14,18 @@ import (
 
 type DeliverAuth struct {
   db *sql.DB 
+  privateKey string
 }
 
-func NewDeliverAuth(db *sql.DB) *DeliverAuth {
+func NewDeliverAuth(db *sql.DB, privateKey string) *DeliverAuth {
   return &DeliverAuth{
     db : db, 
+    privateKey: privateKey,
   }
 }
 
-func LoginRouter(db *sql.DB) *multiplexer.Router {
-  newDeliver := NewDeliverAuth(db)
+func LoginRouter(db *sql.DB, privateKey string) *multiplexer.Router {
+  newDeliver := NewDeliverAuth(db, privateKey)
   router := multiplexer.NewRouter("/").SetPrefix("auth")  
   router.Methods(http.MethodPost).HandleFunc("/login", newDeliver.LoginHandler)
   router.Methods(http.MethodPost).HandleFunc("/register", newDeliver.Registration)
@@ -39,7 +41,7 @@ func(lg *DeliverAuth) LoginHandler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprint(w, err.Error())
     log.Println("Login error")
   }
-  err = usecase.Login(user.Username, user.Password, lg.db, w)
+  err = usecase.Login(user.Username, user.Password, lg.db, w, lg.privateKey)
   if err != nil {
     fmt.Fprint(w, err.Error())
     log.Println("Login error")

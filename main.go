@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 
 	"github.com/MeiSastraJayadi/acacia/multiplexer"
@@ -29,6 +30,10 @@ func main() {
   if db == nil {
     os.Exit(1)
   }
+
+  privKey := os.Getenv("PRIVATE_KEY")
+  privKey = strings.ReplaceAll(privKey, "\\n", "\n")
+
   // err := database.AddUser("dekmei_13", "meisastra", db)
   // if err != nil {
   //   fmt.Printf("%s", err.Error())
@@ -38,10 +43,13 @@ func main() {
   //   fmt.Println(err.Error())
   // }
 
+
+
+  authjwt := usecase.NewAuth(privKey)
   mainRouter := multiplexer.NewRouter("/")
   mainRouter.Methods(http.MethodGet).HandleFunc("/slow", SlowHandler)
-  mainRouter.Methods(http.MethodPost, http.MethodGet).HandleFunc("/", usecase.VerifyJWT(MainHandler))
-  loginRouter := deliver.LoginRouter(db)
+  mainRouter.Methods(http.MethodPost, http.MethodGet).HandleFunc("/", authjwt.VerifyJWT(MainHandler))
+  loginRouter := deliver.LoginRouter(db, privKey)
   err = mainRouter.SubRouter(loginRouter)
   if err != nil {
     os.Exit(1)
