@@ -12,9 +12,10 @@ import (
 	"github.com/MeiSastraJayadi/acacia/multiplexer"
 	database "github.com/MeiSastraJayadi/golang-auth-system.git/db"
 	"github.com/MeiSastraJayadi/golang-auth-system.git/deliver"
+	"github.com/MeiSastraJayadi/golang-auth-system.git/usecase"
+
 	"github.com/joho/godotenv"
 
-	// "github.com/MeiSastraJayadi/golang-auth-system.git/usecase"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -39,7 +40,7 @@ func main() {
 
   mainRouter := multiplexer.NewRouter("/")
   mainRouter.Methods(http.MethodGet).HandleFunc("/slow", SlowHandler)
-  mainRouter.Methods(http.MethodGet, http.MethodPost).HandleFunc("/", MainHandler)
+  mainRouter.Methods(http.MethodPost, http.MethodGet).HandleFunc("/", usecase.VerifyJWT(MainHandler))
   loginRouter := deliver.LoginRouter(db)
   err = mainRouter.SubRouter(loginRouter)
   if err != nil {
