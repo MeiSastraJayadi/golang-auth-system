@@ -14,7 +14,7 @@ import (
 	database "github.com/MeiSastraJayadi/golang-auth-system.git/db"
 	"github.com/MeiSastraJayadi/golang-auth-system.git/deliver"
 	"github.com/MeiSastraJayadi/golang-auth-system.git/usecase"
-
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -86,9 +86,13 @@ func SlowHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func MainHandler(w http.ResponseWriter, r *http.Request) {
+  ctx := r.Context()
+  token := ctx.Value(usecase.ContextValue{}).(*jwt.Token)
+  claims := token.Claims.(jwt.MapClaims)
   if r.Method == http.MethodPost {
     fmt.Fprintf(w, "/home POST")
   }
   log.Println("/home")
+  log.Printf("Hello %s", claims["user"].(string))
 }
 

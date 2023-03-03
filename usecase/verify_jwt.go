@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -13,6 +14,8 @@ import (
 type Auth struct {
   privateKey string
 }
+
+type ContextValue struct{}
 
 func NewAuth(pk string) *Auth {
   return &Auth{
@@ -32,7 +35,6 @@ func (auth *Auth) VerifyJWT(next func(http.ResponseWriter, *http.Request)) http.
 
 
     tkn := r.Header["Authorization"][0]
-    log.Println(tkn)
     check := strings.Split(tkn, " ")
     if check[0] == "Bearer" {
       tkn = check[1]
@@ -57,13 +59,15 @@ func (auth *Auth) VerifyJWT(next func(http.ResponseWriter, *http.Request)) http.
     }
 
     if token.Valid {
+      ctx := r.Context()
+      ctx = context.WithValue(ctx, ContextValue{}, token)
+      r = r.WithContext(ctx)
       next(w, r)
     } else {
       fmt.Fprintln(w, "Unauthorized request : the token is invalid")
       log.Println("Unauthorized request : the token is invalid")
       return
     }
-
   })
 
 }
